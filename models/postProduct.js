@@ -17,7 +17,8 @@ const postSchema = mongoose.Schema({
     title: String,
     brand: String,
     category: String,
-    type: String
+    type: String,
+    demand: String,
     
 })
 

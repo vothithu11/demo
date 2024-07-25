@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import PostProduct from '../models/postProduct.js';
 
 export const getPosts = async (req, res) => {
-    const { brand, ram, type, screen, storage, charger, isPromotion, price, keyword } = req.query;
+    const { brand, ram, type, screen, storage, charger, isPromotion, price, keyword, category, demand, pricerange } = req.query;
     let filter = {};
     
     if (brand) filter.brand = brand;
@@ -11,7 +11,9 @@ export const getPosts = async (req, res) => {
     if (screen) filter.screen = screen;
     if (storage) filter.storage = storage;
     if (charger) filter.charger = charger;
-    if (isPromotion) filter.isPromotion = isPromotion;
+    if (isPromotion) filter.isPromotion = isPromotion; 
+    if (category) filter.category = category;
+    if (demand) filter.demand = demand;
 
     if (price) {
         const priceFilter = {};
@@ -34,6 +36,28 @@ export const getPosts = async (req, res) => {
                 break;
         }
         filter.salePrice = priceFilter;
+    }
+    if (pricerange) {
+        const priceLaptopFilter = {};
+        switch (pricerange) {
+            case 'below10':
+                priceLaptopFilter.$lte = 10000000;
+                break;
+            case '10to20':
+                priceLaptopFilter.$gte = 10000000;
+                priceLaptopFilter.$lte = 20000000;
+                break;
+            case '20to30':
+                priceLaptopFilter.$gte = 20000000;
+                priceLaptopFilter.$lte = 30000000;
+                break;
+            case 'above30':
+                priceLaptopFilter.$gte = 30000000;
+                break;
+            default:
+                break;
+        }
+        filter.salePrice = priceLaptopFilter;
     }
     if (keyword) {
         filter.title = { $regex: new RegExp(keyword, 'i') };
